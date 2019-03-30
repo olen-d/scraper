@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">Mongo Scraper</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Saved Articles <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Scrape New Articles</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Clear Articles</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="jumbotron jumbotron-fluid bg-primary text-white">
+    <div class="container">
+        <h1 class="display-4">Artvoice Edition</h1>
+        <p class="lead">Alternative Weekly from Buffalo, New York</p>
+    </div>
+</div>
+<div class="container">
+    {{#each articles}}
+        <div class="row">
+            <div class="col-10 sm">
+                {{title}}
+            </div>
+            <div class="col-2 sm">
+                <button type="button" class="btn btn-info">Save Article</button>
+            </div>
+        </div>
+    {{/each}}
+</div>
