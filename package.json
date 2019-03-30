@@ -1,0 +1,40 @@
+{
+  "name": "scraper",
+  "version": "1.0.0",
+  "description": "Web application that scrapes news and allows users to comment on and save articles for later.",
+  "main": "server.js",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "eslint-config-standard": "^12.0.0",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.2",
+    "mongojs": "^2.6.0",
+    "mongoose": "^5.4.20",
+    "node-fetch": "^2.3.0",
+    "prettier": "^1.16.4"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olen-d/scraper.git"
+  },
+  "keywords": [
+    "news",
+    "scraper",
+    "articles"
+  ],
+  "author": "Olen Daelhousen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olen-d/scraper/issues"
+  },
+  "homepage": "https://github.com/olen-d/scraper#readme"
+}
