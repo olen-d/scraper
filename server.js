@@ -25,9 +25,10 @@ app.set("view engine", "handlebars");
 // Make public a static folder
 app.use(express.static("public"));
 
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraper";
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/scraper", { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // Routes
 app.get("/", (req, res) => {
