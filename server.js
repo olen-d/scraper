@@ -11,7 +11,7 @@ const db = require("./models");
 
 // Initialize Express
 const app = express();
-const PORT =  process.env.PORT || 3000;
+const PORT =  process.env.PORT || 3090;
 
 // Configure middleware
 // Parse request body as JSON
@@ -33,19 +33,19 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 // Routes
 app.get("/", (req, res) => {
   axios.get(`http://127.0.0.1:${PORT}/articles`)
-  .then(function (response) {
+  .then(response => {
     let hbsObj = {
       articles : response.data 
     };
     res.render("index", hbsObj);
   })
-  .catch(function (error) {
+  .catch(error => {
     console.log(error);
   });
 });
 
-// A GET route for scraping the echoJS website
-app.get("/scrape", function(req, res) {
+// A GET route for scraping Artvoice
+app.get("/scrape", (req, res)=>{
     // First, we grab the body of the html with axios
     axios.get("https://artvoice.com/").then(function(response) {
       // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -77,33 +77,61 @@ app.get("/scrape", function(req, res) {
             {
                 upsert: true
             },
-            function(err, inserted) {
+            (err, inserted) => {
               if (err) {
+                res.json({scrapeStatus: "Scrape Failed"});
                 // Log the error if one is encountered during the query
-                console.log(err);
+                // console.log(err);
               }
               else {
                 // Otherwise, log the inserted data
-                console.log(inserted);
+                // console.log(inserted);
               }
             });
           }
     });
 
-    // Send a message to the client
-    res.send("Scrape Complete");
+    // Reload the articles
+    axios.get(`http://127.0.0.1:${PORT}/articles`)
+    .then(response => {
+      let hbsObj = {
+        articles : response.data 
+      };
+      res.render("index", hbsObj);
+    })
+    .catch(error => {
+      console.log(error);
     });
+  });
+});
+
+// Route for clearing the articles from the db
+app.get("/clear", (req, res) => {
+  db.Article.collection.drop()
+  .then(result => {
+    // Refresh the page
+    axios.get(`http://127.0.0.1:${PORT}/articles`)
+    .then(response => {
+      let hbsObj = {
+        articles : response.data 
+      };
+      res.render("index", hbsObj);
+    })
+    .catch(error => {
+      console.log(error);
+    });    
+  });
 });
 
 // Route for getting all Articles from the db
-app.get("/articles", function(req, res) {
+app.get("/articles", (req, res) => {
   // Grab every document in the Articles collection
   db.Article.find({})
-    .then(function(dbArticle) {
+    .then(dbArticle => {
       // If we were able to successfully find Articles, send them back to the client
       res.json(dbArticle);
     })
-    .catch(function(err) {
+    .catch(err => {
       // If an error occurred, send it to the client
       res.json(err);
     });
@@ -146,6 +174,6 @@ app.get("/articles", function(req, res) {
 // });
 
 // Start the server
-app.listen(PORT, function() {
+app.listen(PORT, () => {
   console.log("App running on port " + PORT + "!");
 });
