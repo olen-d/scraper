@@ -6,6 +6,12 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
+// For generating unique User Ids
+const uuidv4 = require("uuid/v4");
+
+// Cookies will be used to store the User Id so they can retrieve their articles and notes
+const cookieParser = require("cookie-parser");
+
 // Require all models
 const db = require("./models");
 
@@ -17,6 +23,9 @@ const PORT =  process.env.PORT || 3090;
 // Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Use the Cookie Parser
+app.use(cookieParser());
 
 // Set up Handlebars
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
@@ -63,7 +72,6 @@ app.get("/scrape", (req, res)=>{
         result.link = $(this)
         .children("a")
         .attr("href");
-
          // If this found element had both a title and a link
          if (result.title && result.link) {
             // Insert the data in the scrapedData db
@@ -126,7 +134,8 @@ app.get("/clear", (req, res) => {
 // Route for getting all Articles from the db
 app.get("/articles", (req, res) => {
   // Grab every document in the Articles collection
-  db.Article.find({})
+  // Sort in reverse order so that new scrapes are returned on top
+  db.Article.find({}).sort({createdAt:-1})
     .then(dbArticle => {
       // If we were able to successfully find Articles, send them back to the client
       res.json(dbArticle);
@@ -153,6 +162,42 @@ app.get("/articles", (req, res) => {
 //     });
 // });
 
+// Route for saving an article
+
+app.post("/articles/save", (req, res) => {
+  // Check to see if a cookie is assigned and if not, set one
+  const getUserCookie = (req) => {
+    const userCookie = req.cookies["user-id"];
+    if (userCookie) {
+      res.send(articleId);
+      return req.cookies["user-id"];
+    } else { 
+      const newUserId = setUserCookie();
+      return newUserId;
+    }  
+  }
+  
+  const setUserCookie = () => {
+    const newUserId = uuidv4();
+    res.cookie("user-id", newUserId).send(articleId);
+    return newUserId;
+  }
+
+  const articleId = req.body.articleId;
+  const userId = getUserCookie(req);
+  
+  // db.Article.findOneAndUpdateOne({_id: articleId}, {$push: {saved: userId}});
+  db.Article.findOne({_id: articleId})
+    .then(result => {
+      result.saved.push(userId);
+      result.save();
+    })
+    .catch((err) => {
+      console.log("Epic Fail\n", err)
+    })
+
+});
+
 // Route for saving/updating an Article's associated Note
 // app.post("/articles/:id", function(req, res) {
 //   // Create a new note and pass the req.body to the entry
@@ -175,5 +220,5 @@ app.get("/articles", (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log("App running on port " + PORT + "!");
+  console.log("Mongo Scraper running on port " + PORT + "!");
 });
