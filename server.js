@@ -37,11 +37,40 @@ app.use(express.static("public"));
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraper";
 
 // Connect to the Mongo DB
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true });
+
+// Some useful functions
+const getUserCookie = (req, res, articleId) => {
+  const userCookie = req.cookies["user-id"];
+
+  if (userCookie) {
+    // TODO: Clean this mess up - testing for articleId twice is the spahgetti code
+    if(articleId) {
+      res.send(articleId);
+    }
+    return req.cookies["user-id"];
+  } else { 
+    if(articleId) {
+      const newUserId = setUserCookie(res, articleId);
+      return newUserId;
+    } else {
+      return 404;
+    }
+  }  
+}
+
+const setUserCookie = (res, articleId) => {
+  const newUserId = uuidv4();
+  res.cookie("user-id", newUserId).send(articleId);
+  return newUserId;
+}
 
 // Routes
 app.get("/", (req, res) => {
-  axios.get(`http://127.0.0.1:${PORT}/articles`)
+  const articleId = null;
+  const userId = getUserCookie(req, res, articleId);
+  const options = { headers: { Authorization: `Bearer ${userId}`}}; // Sending cookies with Axios is a pain, so we get the cookie and then pass it with the Authorization header
+  axios.get(`http://127.0.0.1:${PORT}/articles`, options)
   .then(response => {
     let hbsObj = {
       articles : response.data 
@@ -133,9 +162,14 @@ app.get("/clear", (req, res) => {
 
 // Route for getting all Articles from the db
 app.get("/articles", (req, res) => {
-  // Grab every document in the Articles collection
+  // Grab every document in the Articles collection that aren't already saved by the current user
   // Sort in reverse order so that new scrapes are returned on top
-  db.Article.find({}).sort({createdAt:-1})
+  let token = req.headers.authorization;
+  if (token.startsWith("Bearer ")) {
+    token = token.slice(7, token.length);
+  }
+
+  db.Article.find({saved: {$ne: token}}).sort({createdAt: -1})
     .then(dbArticle => {
       // If we were able to successfully find Articles, send them back to the client
       res.json(dbArticle);
@@ -162,31 +196,12 @@ app.get("/articles", (req, res) => {
 //     });
 // });
 
-// Route for saving an article
-
-app.post("/articles/save", (req, res) => {
+// Put route for saving an article
+app.put("/articles/save", (req, res) => {
   // Check to see if a cookie is assigned and if not, set one
-  const getUserCookie = (req) => {
-    const userCookie = req.cookies["user-id"];
-    if (userCookie) {
-      res.send(articleId);
-      return req.cookies["user-id"];
-    } else { 
-      const newUserId = setUserCookie();
-      return newUserId;
-    }  
-  }
-  
-  const setUserCookie = () => {
-    const newUserId = uuidv4();
-    res.cookie("user-id", newUserId).send(articleId);
-    return newUserId;
-  }
-
   const articleId = req.body.articleId;
-  const userId = getUserCookie(req);
+  const userId = getUserCookie(req, res, articleId);
   
-  // db.Article.findOneAndUpdateOne({_id: articleId}, {$push: {saved: userId}});
   db.Article.findOne({_id: articleId})
     .then(result => {
       result.saved.push(userId);
@@ -195,6 +210,47 @@ app.post("/articles/save", (req, res) => {
     .catch((err) => {
       console.log("Epic Fail\n", err)
     })
+
+});
+
+// Get route for returning saved articles
+app.get("/saved", (req, res) => {
+  // Get the user id
+  const articleId = null;
+  const userId = getUserCookie(req, res, articleId);
+
+  if(userId != 404) {
+    // Search the articles collection for any with the user id in saved
+    db.Article.find({ saved: userId }).sort({createdAt:-1})
+      .then(result =>{
+        let hbsObj = {
+          articles : result 
+        };
+        res.render("saved", hbsObj);        
+      })
+      .catch((err) => {
+        console.log("server.js - /articles/saved\nDatabase Error: ", err);
+      })
+    // Return a useful error if no articles are saved
+    // Return the saved articles
+  } else {
+    // No user found...
+  }
+});
+
+// Delete route for removing the article
+app.delete("/article/remove", (req, res) => {
+  const articleId = req.body.articleId;
+  const userId = getUserCookie(req, res, articleId);
+
+  db.Article.findOne({_id: articleId})
+  .then(result => {
+    result.saved.pull(userId);
+    result.save();
+  })
+  .catch((err) => {
+    console.log("Epic Fail\n", err)
+  })
 
 });
 
