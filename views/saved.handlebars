@@ -1,3 +1,29 @@
+<!-- Modal for the notes -->
+<div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="notesModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notesModalLabel"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-text-area">
+        <form>
+          <textarea class="form-control" rows="5" placeholder="Enter a new note..."></textarea>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary saveNoteBtn">Save Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {{>navbar}}
 
 <div class="jumbotron jumbotron-fluid bg-primary text-white">
@@ -9,12 +35,15 @@
 <div class="container">
   {{#each articles}}
     <div id="js-{{_id}}" class="row">
-      <div class="col-10 sm">
+      <div class="col-8 sm">
         {{title}}
       </div>
-      <div class="col-2 sm">
-        <button type="button" class="btn btn-info removeBtn" data-article-id="{{_id}}">Remove Saved Article</button>
+      <div class="col-4 sm">
+        <button type="button" class="btn btn-info removeBtn" data-article-id="{{_id}}">Remove</button>
+        <button type="button" class="btn btn-primary notesBtn" data-toggle="modal" data-target="#notesModal" data-article-name="{{title}}" data-article-id="{{_id}}">Notes</button>
       </div>
     </div>
   {{/each}}
 </div>
+
+<script src="/assets/js/saved.js"></script>
