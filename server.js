@@ -254,6 +254,25 @@ app.delete("/article/remove", (req, res) => {
 
 });
 
+// Post route for adding a note to the Article
+app.post("/note/add" , (req, res) => {
+  const userId = getUserCookie(req, res, null);
+  const data = req.body.data;
+  const articleId = data.articleId;
+  const content = data.noteContent;
+
+  const newNote = new db.Note({
+    userId,
+    articleId,
+    content
+  });
+
+  newNote.save(err => {
+    if (err) return err;
+    res.send(newNote);
+  });
+});
+
 // Route for saving/updating an Article's associated Note
 // app.post("/articles/:id", function(req, res) {
 //   // Create a new note and pass the req.body to the entry

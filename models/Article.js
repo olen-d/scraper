@@ -17,10 +17,6 @@ const ArticleSchema = new Schema({
   saved: {
     type: Array,
     required: true
-  },
-  note: {
-    type: Schema.Types.ObjectId,
-    ref: "Note"
   }
 },
 { 

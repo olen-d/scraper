@@ -3,6 +3,7 @@ const removeClassName = document.getElementsByClassName("removeBtn");
 
 $(".notesBtn").on("click", function() {
     $("#notesModalLabel").append("Notes For: " + $(this).attr("data-article-name"));
+    $(".saveNoteBtn").attr("data-article-id", $(this).attr("data-article-id"));
     // Use Axios to retrieve the notes
     console.log($(this).attr("data-article-id"));
 });
@@ -13,6 +14,10 @@ $("#notesModal").on("hidden.bs.modal", () => {
 
 $(".saveNoteBtn").on("click", function() {
   // Save the note
+  const articleId = $(this).attr("data-article-id");
+  const noteContent = $("#note-content").val();
+  const newNote = addNote(articleId, noteContent);
+  $(".modal-body").append(newNote);
 });
 
 const removeArticle = function() {
@@ -32,6 +37,26 @@ const removeArticle = function() {
   .catch(error => {
     console.log(error);
     alert(error);
+  })
+}
+
+// Note related items
+
+const addNote = (articleId, noteContent) => {
+  // Put route to add the note /note/add/articleId
+  axios.post("note/add", {
+    data: { 
+      articleId,
+      noteContent
+    }
+  })
+  .then(response => {
+    if (response.status === 200) {
+      console.log("RESPONSE\n", response);
+      // const noteContent = response.data.content;
+      const newNote = `<p class="note-content">${noteContent}</p>`;
+      $(".modal-body").append(newNote);
+    }
   })
 }
 
