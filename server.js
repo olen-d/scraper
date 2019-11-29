@@ -254,6 +254,17 @@ app.delete("/article/remove", (req, res) => {
 
 });
 
+// Post route for adding a note to the Article
+app.post("/note/add" , (req, res) => {
+  console.log("PARAMS\n", req.params);
+  console.log("ARTICLE ID:\n", req.params.articleId);
+  console.log("SERVER NOTE CONTENT\n", req.params.noteContent);
+  // Save the note to the database
+
+  // On error, return error
+  // On success return "Note Saved" and add the note to the modal
+});
+
 // Route for saving/updating an Article's associated Note
 // app.post("/articles/:id", function(req, res) {
 //   // Create a new note and pass the req.body to the entry
