@@ -256,13 +256,21 @@ app.delete("/article/remove", (req, res) => {
 
 // Post route for adding a note to the Article
 app.post("/note/add" , (req, res) => {
-  console.log("PARAMS\n", req.params);
-  console.log("ARTICLE ID:\n", req.params.articleId);
-  console.log("SERVER NOTE CONTENT\n", req.params.noteContent);
-  // Save the note to the database
+  const userId = getUserCookie(req, res, null);
+  const data = req.body.data;
+  const articleId = data.articleId;
+  const content = data.noteContent;
 
-  // On error, return error
-  // On success return "Note Saved" and add the note to the modal
+  const newNote = new db.Note({
+    userId,
+    articleId,
+    content
+  });
+
+  newNote.save(err => {
+    if (err) return err;
+    res.send(newNote);
+  });
 });
 
 // Route for saving/updating an Article's associated Note

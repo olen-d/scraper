@@ -16,7 +16,6 @@ $(".saveNoteBtn").on("click", function() {
   // Save the note
   const articleId = $(this).attr("data-article-id");
   const noteContent = $("#note-content").val();
-  console.log("NOTE CONTENT:\n", noteContent);
   const newNote = addNote(articleId, noteContent);
   $(".modal-body").append(newNote);
 });
@@ -45,17 +44,20 @@ const removeArticle = function() {
 
 const addNote = (articleId, noteContent) => {
   // Put route to add the note /note/add/articleId
-  console.log("addNote:\n", articleId, noteContent);
-  axios.post(`note/add`, {
-    articleId: articleId,
-    noteContent: noteContent
+  axios.post("note/add", {
+    data: { 
+      articleId,
+      noteContent
+    }
   })
   .then(response => {
     if (response.status === 200) {
-      console.log("saved.js RESPONSE:\n");
+      console.log("RESPONSE\n", response);
+      // const noteContent = response.data.content;
+      const newNote = `<p class="note-content">${noteContent}</p>`;
+      $(".modal-body").append(newNote);
     }
   })
-  //return newNote;
 }
 
 Array.from(removeClassName).forEach(e => {
