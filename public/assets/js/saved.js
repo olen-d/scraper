@@ -10,6 +10,13 @@ $(".btn-notes").on("click", function() {
     readNotes(articleId)
     .then(notes => {
       $(".modal-body").append(notes);
+      const removeNoteClassName = document.getElementsByClassName("btn-remove-note");
+      Array.from(removeNoteClassName).forEach(e => {
+        e.addEventListener("click", removeNote);
+      });
+    })
+    .catch(error => {
+      console.log("saved.js - readNotes FAILED: ", error);
     });
 });
 
@@ -42,7 +49,6 @@ const removeArticle = function() {
   })
   .catch(error => {
     console.log(error);
-    alert(error);
   })
 }
 
@@ -72,14 +78,42 @@ const readNotes = articleId => {
       axios.get(`/notes/article/${articleId}`)
       .then(response => {
         let notes = ""
-        response.data.forEach(note => {
-          notes += `<p class="note-content">${note.content}</p>`;
-        });
+        if (response.data.length > 0) {
+          response.data.forEach(note => {
+            notes += `<div class="note-content clearfix" id="js-${note._id}"><p class="note-text float-left" style="width:85%;">${note.content}</p><button class="btn btn-danger btn-remove-note float-right" data-user-id="${note.userId}" data-note-id="${note._id}"><i class="fas fa-minus-square"></i></button></div>`;
+          });
+        } else {
+          notes = "<div class=\"note-content\" id=\"no-notes-found-msg\"><p class=\"note-text\">No notes were found for this article.</p></div>";
+        }
         resolve(notes);
       });
     } catch (error) {
       reject(`Failed to retrieve notes for ${articleId}. Error: ${error}`); 
     }
+  });
+}
+
+const removeNote = function() {
+  const noteId = this.getAttribute("data-note-id");
+  const userId = this.getAttribute("data-user-id");
+
+  axios.delete("/note/remove", {
+    data: { 
+      noteId,
+      userId
+    }
+  })
+  .then(response => {
+    if (response.status === 200 && response.data.deletedCount === 1) {
+      //Delete the box with the note id from the DOM
+      let elem = document.getElementById(`js-${noteId}`);
+      elem.parentNode.removeChild(elem);
+    } else {
+      // TODO: Update status that delete failed.
+    }
+  })
+  .catch(error => {
+    console.log("saved.js - removeNote - delete failed: ", error);
   });
 }
 

@@ -289,6 +289,28 @@ app.get("/notes/article/:articleId", (req, res) => {
   });
 });
 
+// Delete route for removing a note
+app.delete("/note/remove", (req, res) => {
+  const noteId = req.body.noteId;
+  const userId = req.body.userId;
+  const currUserId = getUserCookie(req, res, null);
+
+  if (userId === currUserId) {
+    db.Note.deleteOne({_id: noteId})
+    .then(result => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log("Epic Fail\n", err)
+    })
+  } else {
+    res.json({
+      status: 403,
+      error: "Only the note author can delete the note."
+    }); 
+  }
+});
+
 // Route for saving/updating an Article's associated Note
 // app.post("/articles/:id", function(req, res) {
 //   // Create a new note and pass the req.body to the entry
