@@ -1,23 +1,29 @@
 // Depends on JQuery
-const removeClassName = document.getElementsByClassName("removeBtn");
+const removeClassName = document.getElementsByClassName("btn-remove");
 
-$(".notesBtn").on("click", function() {
-    $("#notesModalLabel").append("Notes For: " + $(this).attr("data-article-name"));
-    $(".saveNoteBtn").attr("data-article-id", $(this).attr("data-article-id"));
+$(".btn-notes").on("click", function() {
+    const articleId = $(this).attr("data-article-id");
+    $("#notes-modal-label").append("Notes For: " + $(this).attr("data-article-name"));
+    $(".btn-save-note").attr("data-article-id", articleId);
     // Use Axios to retrieve the notes
-    console.log($(this).attr("data-article-id"));
+
+    readNotes(articleId)
+    .then(notes => {
+      $(".modal-body").append(notes);
+    });
 });
 
-$("#notesModal").on("hidden.bs.modal", () => {
-    $("#notesModalLabel").empty();
+$("#notes-modal").on("hidden.bs.modal", () => {
+    $("#notes-modal-label").empty();
+    $(".modal-body").empty();
+    $("#note-input").val("");
 });
 
-$(".saveNoteBtn").on("click", function() {
+$(".btn-save-note").on("click", function() {
   // Save the note
   const articleId = $(this).attr("data-article-id");
-  const noteContent = $("#note-content").val();
-  const newNote = addNote(articleId, noteContent);
-  $(".modal-body").append(newNote);
+  const noteContent = $("#note-input").val();
+  addNote(articleId, noteContent);
 });
 
 const removeArticle = function() {
@@ -44,7 +50,7 @@ const removeArticle = function() {
 
 const addNote = (articleId, noteContent) => {
   // Put route to add the note /note/add/articleId
-  axios.post("note/add", {
+  axios.post("/notes/add", {
     data: { 
       articleId,
       noteContent
@@ -52,12 +58,29 @@ const addNote = (articleId, noteContent) => {
   })
   .then(response => {
     if (response.status === 200) {
-      console.log("RESPONSE\n", response);
-      // const noteContent = response.data.content;
+      const noteContent = response.data.content;
       const newNote = `<p class="note-content">${noteContent}</p>`;
-      $(".modal-body").append(newNote);
+      $(".modal-body").prepend(newNote);
+      $("#note-input").val("");
     }
   })
+}
+
+const readNotes = articleId => {
+  return new Promise((resolve, reject) => {
+    try {
+      axios.get(`/notes/article/${articleId}`)
+      .then(response => {
+        let notes = ""
+        response.data.forEach(note => {
+          notes += `<p class="note-content">${note.content}</p>`;
+        });
+        resolve(notes);
+      });
+    } catch (error) {
+      reject(`Failed to retrieve notes for ${articleId}. Error: ${error}`); 
+    }
+  });
 }
 
 Array.from(removeClassName).forEach(e => {

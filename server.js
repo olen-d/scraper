@@ -255,7 +255,7 @@ app.delete("/article/remove", (req, res) => {
 });
 
 // Post route for adding a note to the Article
-app.post("/note/add" , (req, res) => {
+app.post("/notes/add" , (req, res) => {
   const userId = getUserCookie(req, res, null);
   const data = req.body.data;
   const articleId = data.articleId;
@@ -270,6 +270,22 @@ app.post("/note/add" , (req, res) => {
   newNote.save(err => {
     if (err) return err;
     res.send(newNote);
+  });
+});
+
+// Get route for reading the notes
+app.get("/notes/article/:articleId", (req, res) => {
+  const articleId = req.params.articleId;
+  // res.send("TEST: " + articleId);
+
+  db.Note.find({articleId: articleId}).sort({createdAt: -1})
+  .then(dbNote => {
+    // If we were able to successfully find Notes, send them back to the client
+    res.json(dbNote);
+  })
+  .catch(err => {
+    // If an error occurred, send it to the client
+    res.json(err);
   });
 });
 
