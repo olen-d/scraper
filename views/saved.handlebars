@@ -35,11 +35,13 @@
   {{#each articles}}
     <div id="js-{{_id}}" class="row">
       <div class="col-8 sm">
-        {{title}}
+        <a href="{{link}}" target="_blank" rel="noopener noreferrer">{{title}}</a>
       </div>
-      <div class="col-4 sm">
-        <button type="button" class="btn btn-info btn-remove" data-article-id="{{_id}}">Remove</button>
-        <button type="button" class="btn btn-primary btn-notes" data-toggle="modal" data-target="#notes-modal" data-article-name="{{title}}" data-article-id="{{_id}}">Notes</button>
+      <div class="col-2 sm">
+        <button type="button" class="btn btn-info btn-block btn-remove" data-article-id="{{_id}}">Remove</button>
+      </div>
+      <div class="col-2 sm">
+        <button type="button" class="btn btn-primary btn-block btn-notes" data-toggle="modal" data-target="#notes-modal" data-article-name="{{title}}" data-article-id="{{_id}}">Notes</button>
       </div>
     </div>
   {{/each}}

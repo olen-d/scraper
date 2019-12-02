@@ -9,11 +9,14 @@
 <div class="container">
   {{#each articles}}
     <div id="js-{{_id}}" class="row">
-      <div class="col-10 sm">
+      <div class="col-8 sm">
         {{title}}
       </div>
       <div class="col-2 sm">
-        <button type="button" class="btn btn-info saveBtn" data-article-id="{{_id}}">Save Article</button>
+        <button type="button" class="btn btn-primary btn-block btn-read-article" data-article-url="{{link}}">Read Article</button>
+      </div>
+      <div class="col-2 sm">
+        <button type="button" class="btn btn-info btn-block btn-save-article" data-article-id="{{_id}}">Save Article</button>
       </div>
     </div>
   {{/each}}

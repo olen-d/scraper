@@ -1,4 +1,5 @@
-const saveClassName = document.getElementsByClassName("saveBtn");
+const saveClassName = document.getElementsByClassName("btn-save-article");
+const readClassName = document.getElementsByClassName("btn-read-article");
 
 // TODO: Refactor this to change the functions to methods and export an object
 const saveArticle = function() {
@@ -21,6 +22,15 @@ const saveArticle = function() {
   });
 }
 
+const readArticle = function() {
+  const articleURL = this.getAttribute("data-article-url");
+  parent.open(articleURL);
+}
+
 Array.from(saveClassName).forEach(e => {
   e.addEventListener("click", saveArticle);
+});
+
+Array.from(readClassName).forEach(e => {
+  e.addEventListener("click", readArticle);
 });
