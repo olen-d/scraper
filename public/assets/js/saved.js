@@ -64,9 +64,12 @@ const addNote = (articleId, noteContent) => {
   })
   .then(response => {
     if (response.status === 200) {
+      const noteId = response.data._id;
       const noteContent = response.data.content;
-      const newNote = `<p class="note-content">${noteContent}</p>`;
+      const noteUserId = response.data.userId;
+      const newNote = `<div class="note-content clearfix" id="js-${noteId}"><p class="note-text float-left" style="width:85%;">${noteContent}</p><button class="btn btn-danger btn-remove-note float-right" id="${noteId}" data-user-id="${noteUserId}" data-note-id="${noteId}"><i class="fas fa-minus-square"></i></button></div>`;
       $(".modal-body").prepend(newNote);
+      $(`#${noteId}`).on("click", removeNote);
       $("#note-input").val("");
     }
   })
