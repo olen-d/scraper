@@ -1,0 +1,17 @@
+body {
+  font-family: Roboto;
+}
+
+.main-title {
+  font-family: 'Archivo Black'
+}
+  
+.row-article {
+  border-bottom: 1px dotted #999;
+}
+  
+.article-title {
+  font-family: 'Bebas Neue';
+  font-size: 1.5rem;
+  color: #5a5a5a;
+}

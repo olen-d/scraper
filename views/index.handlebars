@@ -1,22 +1,24 @@
 {{>navbar}}
 
-<div class="jumbotron jumbotron-fluid bg-primary text-white">
+<div class="jumbotron jumbotron-fluid bg-primary text-white shadow-lg">
   <div class="container">
-    <h1 class="display-4">Artvoice Edition</h1>
+    <h1 class="display-4 main-title">Artvoice Edition</h1>
     <p class="lead">Alternative Weekly from Buffalo, New York</p>
   </div>
 </div>
 <div class="container">
   {{#each articles}}
-    <div id="js-{{_id}}" class="row">
+    <div id="js-{{_id}}" class="row mb-3 py-3 row-article">
       <div class="col-8 sm">
-        {{title}}
+        <p class="ml-2 article-title">
+          {{title}}
+        </p>
       </div>
       <div class="col-2 sm">
-        <button type="button" class="btn btn-primary btn-block btn-read-article" data-article-url="{{link}}">Read Article</button>
+        <button type="button" class="btn btn-info btn-sm btn-block btn-read-article" data-article-url="{{link}}">Read Article</button>
       </div>
       <div class="col-2 sm">
-        <button type="button" class="btn btn-info btn-block btn-save-article" data-article-id="{{_id}}">Save Article</button>
+        <button type="button" class="btn btn-info btn-sm btn-block btn-save-article" data-article-id="{{_id}}">Save Article</button>
       </div>
     </div>
   {{/each}}
