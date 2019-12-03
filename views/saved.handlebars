@@ -31,7 +31,7 @@
     <p class="lead">Saved Articles</p>
   </div>
 </div>
-<div class="container">
+<div class="container ms-main-content">
   {{#each articles}}
     <div id="js-{{_id}}" class="row mb-3 py-3 row-article">
       <div class="col-8 sm">
@@ -48,5 +48,7 @@
     </div>
   {{/each}}
 </div>
+
+{{>footer}}
 
 <script src="/assets/js/saved.js"></script>
