@@ -67,7 +67,7 @@ const addNote = (articleId, noteContent) => {
       const noteId = response.data._id;
       const noteContent = response.data.content;
       const noteUserId = response.data.userId;
-      const newNote = `<div class="note-content clearfix" id="js-${noteId}"><p class="note-text float-left" style="width:85%;">${noteContent}</p><button class="btn btn-danger btn-remove-note float-right" id="${noteId}" data-user-id="${noteUserId}" data-note-id="${noteId}"><i class="fas fa-minus-square"></i></button></div>`;
+      const newNote = `<div class="note-content py-3 clearfix" id="js-${noteId}"><p class="note-text float-left" style="width:85%;">${noteContent}</p><button class="btn btn-danger btn-remove-note float-right" id="${noteId}" data-user-id="${noteUserId}" data-note-id="${noteId}"><i class="fas fa-minus-square"></i></button></div>`;
       $(".modal-body").prepend(newNote);
       if($("#no-notes-found-msg").length) {
         $("#no-notes-found-msg").remove();
@@ -86,10 +86,10 @@ const readNotes = articleId => {
         let notes = ""
         if (response.data.length > 0) {
           response.data.forEach(note => {
-            notes += `<div class="note-content clearfix" id="js-${note._id}"><p class="note-text float-left" style="width:85%;">${note.content}</p><button class="btn btn-danger btn-remove-note float-right" data-user-id="${note.userId}" data-note-id="${note._id}"><i class="fas fa-minus-square"></i></button></div>`;
+            notes += `<div class="note-content py-3 clearfix" id="js-${note._id}"><p class="note-text float-left" style="width:85%;">${note.content}</p><button class="btn btn-danger btn-remove-note float-right" data-user-id="${note.userId}" data-note-id="${note._id}"><i class="fas fa-minus-square"></i></button></div>`;
           });
         } else {
-          notes = "<div class=\"note-content\" id=\"no-notes-found-msg\"><p class=\"note-text\">No notes were found for this article.</p></div>";
+          notes = "<div class=\"note-content py-3\" id=\"no-notes-found-msg\"><p class=\"note-text\">No notes were found for this article.</p></div>";
         }
         resolve(notes);
       });

@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body">
       </div>
-      <div class="modal-text-area">
+      <div class="modal-text-area px-3">
         <form>
           <textarea class="form-control" id="note-input" rows="5" placeholder="Enter a new note..."></textarea>
         </form>
@@ -27,21 +27,23 @@
 
 <div class="jumbotron jumbotron-fluid bg-primary text-white">
   <div class="container">
-    <h1 class="display-4">Artvoice Edition</h1>
+    <h1 class="display-4 main-title">Artvoice Edition</h1>
     <p class="lead">Saved Articles</p>
   </div>
 </div>
 <div class="container">
   {{#each articles}}
-    <div id="js-{{_id}}" class="row">
+    <div id="js-{{_id}}" class="row mb-3 py-3 row-article">
       <div class="col-8 sm">
-        <a href="{{link}}" target="_blank" rel="noopener noreferrer">{{title}}</a>
+        <p class="ml-2 article-title">
+          <a href="{{link}}" target="_blank" rel="noopener noreferrer">{{title}}</a>
+        </p>
       </div>
       <div class="col-2 sm">
-        <button type="button" class="btn btn-info btn-block btn-remove" data-article-id="{{_id}}">Remove</button>
+        <button type="button" class="btn btn-danger btn-sm btn-block btn-remove" data-article-id="{{_id}}">Remove</button>
       </div>
       <div class="col-2 sm">
-        <button type="button" class="btn btn-primary btn-block btn-notes" data-toggle="modal" data-target="#notes-modal" data-article-name="{{title}}" data-article-id="{{_id}}">Notes</button>
+        <button type="button" class="btn btn-info btn-sm btn-block btn-notes" data-toggle="modal" data-target="#notes-modal" data-article-name="{{title}}" data-article-id="{{_id}}">Notes</button>
       </div>
     </div>
   {{/each}}
