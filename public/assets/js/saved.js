@@ -83,6 +83,7 @@ const readNotes = articleId => {
     try {
       axios.get(`/notes/article/${articleId}`)
       .then(response => {
+        console.log("RESPONSE (SAVED.JS)\n",response);
         let notes = ""
         if (response.data.length > 0) {
           response.data.forEach(note => {
