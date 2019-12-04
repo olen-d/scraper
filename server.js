@@ -139,8 +139,8 @@ app.get("/scrape", (req, res) => {
 });
 
 // Route for clearing the articles from the db
-// TODO - Also clear the notes...
 app.get("/clear", (req, res) => {
+  db.Note.collection.drop();
   db.Article.collection.drop()
   .then(result => {
     // Redirect to the home page
@@ -151,7 +151,7 @@ app.get("/clear", (req, res) => {
     }
   })
   .catch(error => {
-    res.status(500).send("Error! Articles Collection Not Dropped. " + error);
+    res.status(500).send("Error! Articles and/or Notes Collection(s) Not Dropped. " + error);
   });
 });
 
