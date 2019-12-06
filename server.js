@@ -217,7 +217,7 @@ app.get("/saved", (req, res) => {
   if(userId != 404) {
     // Search the articles collection for any with the user id in saved
     db.Article.find({ saved: userId }).sort({createdAt:-1})
-      .then(result =>{
+      .then(result => {
         let hbsObj = {
           articles : result 
         };
@@ -229,7 +229,8 @@ app.get("/saved", (req, res) => {
     // Return a useful error if no articles are saved
     // Return the saved articles
   } else {
-    // No user found...
+    // TODO: Update this to return an actual error.
+    res.redirect("/");
   }
 });
 

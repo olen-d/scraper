@@ -9,15 +9,15 @@
 <div class="container ms-main-content">
   {{#each articles}}
     <div id="js-{{_id}}" class="row mb-3 py-3 row-article">
-      <div class="col-8 sm">
+      <div class="col-12 col-lg-8 col-sm-6">
         <p class="ml-2 article-title">
           {{title}}
         </p>
       </div>
-      <div class="col-2 sm">
+      <div class="col-6 col-lg-2 col-sm-3">
         <button type="button" class="btn btn-info btn-sm btn-block btn-read-article" data-article-url="{{link}}">Read Article</button>
       </div>
-      <div class="col-2 sm">
+      <div class="col-6 col-lg-2 col-sm-3">
         <button type="button" class="btn btn-info btn-sm btn-block btn-save-article" data-article-id="{{_id}}">Save Article</button>
       </div>
     </div>
