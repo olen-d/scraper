@@ -61,7 +61,7 @@ const getUserCookie = (req, res, articleId) => {
 
 const setUserCookie = (res, articleId) => {
   const newUserId = uuidv4();
-  res.cookie("user-id", newUserId).send(articleId);
+  res.cookie("user-id", newUserId, { expires: new Date(Date.now() + 365 * 24 * 3600000) }).send(articleId);
   return newUserId;
 }
 
