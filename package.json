@@ -4,7 +4,7 @@
   "description": "Web application that scrapes news and allows users to comment on and save articles for later.",
   "main": "server.js",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "^1.4.4",
     "eslint-config-standard": "^12.0.0",
